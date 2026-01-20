@@ -373,10 +373,6 @@ body::after {
   color: var(--text-secondary);
 }
 
-.sideTitle::first-letter {
-  color: var(--accent);
-}
-
 .btn {
   border: 1px solid var(--glass-edge);
   background: 
