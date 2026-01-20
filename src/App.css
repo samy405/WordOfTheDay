@@ -78,7 +78,7 @@ body {
   min-height: 100vh;
 }
 
-/* Ambient light layer */
+/* Ambient light layer with subtle drift */
 body::before {
   content: "";
   position: fixed;
@@ -90,6 +90,22 @@ body::before {
   pointer-events: none;
   z-index: 0;
   opacity: 0.6;
+  animation: ambientDrift 30s ease-in-out infinite;
+}
+
+@keyframes ambientDrift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  33% {
+    transform: translate(20px, -15px) scale(1.02);
+    opacity: 0.65;
+  }
+  66% {
+    transform: translate(-15px, 10px) scale(0.98);
+    opacity: 0.55;
+  }
 }
 
 /* Depth layer */
@@ -164,7 +180,8 @@ body::after {
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
   overflow: hidden;
   z-index: 1;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
 }
 
 /* Metallic edge highlight */
@@ -272,6 +289,18 @@ body::after {
   position: relative;
   z-index: 1;
   text-shadow: 0 0 20px var(--accent-soft);
+  animation: wordEntrance 0.8s ease-out;
+}
+
+@keyframes wordEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .meaning {
@@ -326,6 +355,7 @@ body::after {
   box-shadow: 
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     0 4px 12px rgba(0, 217, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 .dot {
@@ -408,6 +438,15 @@ body::after {
     0 4px 12px rgba(0, 217, 255, 0.2);
 }
 
+.btn:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 3px rgba(0, 217, 255, 0.2),
+    0 4px 12px rgba(0, 217, 255, 0.2);
+}
+
 .btn:active {
   transform: translateY(1px);
   box-shadow: 
@@ -424,7 +463,11 @@ body::after {
   gap: 12px;
   max-height: 520px;
   overflow: auto;
+  overflow-x: hidden;
   padding-right: 4px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 217, 255, 0.3) transparent;
 }
 
 .item {
@@ -444,7 +487,26 @@ body::after {
   box-shadow: 
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: itemFadeIn 0.4s ease-out backwards;
 }
+
+@keyframes itemFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.item:nth-child(1) { animation-delay: 0.05s; }
+.item:nth-child(2) { animation-delay: 0.1s; }
+.item:nth-child(3) { animation-delay: 0.15s; }
+.item:nth-child(4) { animation-delay: 0.2s; }
+.item:nth-child(5) { animation-delay: 0.25s; }
+.item:nth-child(n+6) { animation-delay: 0.3s; }
 
 .item::before {
   content: "";
@@ -512,6 +574,14 @@ body::after {
   line-height: 1.5;
   position: relative;
   z-index: 1;
+}
+
+/* Empty state styling */
+.item:only-child .itemMeaning {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-style: italic;
+  padding: 8px 0;
 }
 
 /* Scrollbar with ambient color */
